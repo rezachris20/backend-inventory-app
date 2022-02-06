@@ -25,11 +25,22 @@ var categorySet = wire.NewSet(
 	handler.NewCategoryHandler,
 )
 
+var productSet = wire.NewSet(
+	repository.NewProductRepository,
+	service.NewProductService,
+	handler.NewProductHandler,
+)
+
+var transactionSet = wire.NewSet(
+	repository.NewTransactionRepository, service.NewTransactionService, handler.NewTransactionHandler)
+
 func InitializedServer() *http.Server {
 	wire.Build(
 		app.NewDB,
 		userSet,
 		categorySet,
+		productSet,
+		transactionSet,
 		app.NewRouter,
 		app.NewServer,
 	)

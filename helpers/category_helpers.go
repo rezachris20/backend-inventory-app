@@ -7,13 +7,14 @@ import (
 
 func ToCategoryResponse(categoryEntity entity.Category) category.CategoryResponse {
 	return category.CategoryResponse{
-		ID:         categoryEntity.ID,
-		Name:       categoryEntity.Name,
-		IsPrimary:  categoryEntity.IsPrimary,
-		IsActive:   categoryEntity.IsActive,
-		CategoryID: categoryEntity.CategoryID,
-		CreatedAt:  categoryEntity.CreatedAt,
-		UpdatedAt:  categoryEntity.UpdatedAt,
+		ID:          categoryEntity.ID,
+		Name:        categoryEntity.Name,
+		IsPrimary:   categoryEntity.IsPrimary,
+		IsActive:    categoryEntity.IsActive,
+		CategoryID:  categoryEntity.CategoryID,
+		SubCategory: categoryEntity.SubCategory,
+		CreatedAt:   categoryEntity.CreatedAt,
+		UpdatedAt:   categoryEntity.UpdatedAt,
 	}
 }
 

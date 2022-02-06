@@ -25,7 +25,13 @@ func InitializedServer() *http.Server {
 	categoryRepository := repository.NewCategoryRepository(db)
 	categoryService := service.NewCategoryService(categoryRepository)
 	categoryHandler := handler.NewCategoryHandler(categoryService)
-	echo := app.NewRouter(userHandler, categoryHandler)
+	productRepository := repository.NewProductRepository(db)
+	productService := service.NewProductService(productRepository, categoryRepository)
+	productHandler := handler.NewProductHandler(productService)
+	transactionRepository := repository.NewTransactionRepository(db)
+	transactionService := service.NewTransactionService(transactionRepository, productRepository)
+	transactionHandler := handler.NewTransactionHandler(transactionService)
+	echo := app.NewRouter(userHandler, categoryHandler, productHandler, transactionHandler)
 	server := app.NewServer(echo)
 	return server
 }
@@ -35,3 +41,7 @@ func InitializedServer() *http.Server {
 var userSet = wire.NewSet(repository.NewUserRepository, service.NewUserService, handler.NewUserHandler)
 
 var categorySet = wire.NewSet(repository.NewCategoryRepository, service.NewCategoryService, handler.NewCategoryHandler)
+
+var productSet = wire.NewSet(repository.NewProductRepository, service.NewProductService, handler.NewProductHandler)
+
+var transactionSet = wire.NewSet(repository.NewTransactionRepository, service.NewTransactionService, handler.NewTransactionHandler)

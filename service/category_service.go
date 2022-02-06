@@ -6,11 +6,12 @@ import (
 	"backend-inventory-app/repository"
 	"backend-inventory-app/web/category"
 	"errors"
+	"fmt"
 )
 
 type CategoryService interface {
 	CreateNewCategory(request category.CreateCategoryRequest) (category.CategoryResponse, error)
-	UpdateCategory(userID int, request category.UpdateCategoryRequest) (category.CategoryResponse, error)
+	UpdateCategory(categoryID int, request category.UpdateCategoryRequest) (category.CategoryResponse, error)
 	DeleteCategory(categoryID int) (bool, error)
 	FindCategoryByID(categoryID int) (category.CategoryResponse, error)
 	FindAllCategories() ([]category.CategoryResponse, error)
@@ -59,9 +60,13 @@ func (s *categoryService) CreateNewCategory(request category.CreateCategoryReque
 	return helpers.ToCategoryResponse(createCategory), nil
 }
 
-func (s *categoryService) UpdateCategory(userID int, request category.UpdateCategoryRequest) (category.CategoryResponse, error) {
+func (s *categoryService) UpdateCategory(categoryID int, request category.UpdateCategoryRequest) (category.CategoryResponse, error) {
 
-	var category entity.Category
+	// Cek apakah ada data dengan ID tersebut
+	category, err := s.repository.Category(categoryID)
+	if err != nil || category.ID == 0 {
+		return helpers.ToCategoryResponse(category), errors.New("Category not found")
+	}
 
 	if request.CategoryID != 0 {
 		category.CategoryID = request.CategoryID
@@ -75,9 +80,7 @@ func (s *categoryService) UpdateCategory(userID int, request category.UpdateCate
 		category.IsPrimary = request.IsPrimary
 	}
 
-	if request.IsActive {
-		category.IsActive = request.IsActive
-	}
+	category.IsActive = request.IsActive
 
 	updateCategory, err := s.repository.Update(category)
 	if err != nil {
@@ -117,5 +120,10 @@ func (s *categoryService) FindAllCategories() ([]category.CategoryResponse, erro
 		return helpers.ToCategoryResponses(categories), err
 	}
 
+	for key, category := range categories {
+		subCategory, _ := s.repository.SubCategory(category.ID)
+		categories[key].SubCategory = append(categories[key].SubCategory, subCategory...)
+	}
+	fmt.Print(categories)
 	return helpers.ToCategoryResponses(categories), nil
 }

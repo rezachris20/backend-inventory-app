@@ -20,7 +20,11 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 	return nil
 }
 
-func NewRouter(userHandler handler.UserHandler, categoryHandler handler.CategoryHandler) *echo.Echo {
+func NewRouter(
+	userHandler handler.UserHandler,
+	categoryHandler handler.CategoryHandler,
+	productHandler handler.ProductHandler,
+	transactionHandler handler.TransactionHandler) *echo.Echo {
 	e := echo.New()
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"*"},
@@ -29,6 +33,8 @@ func NewRouter(userHandler handler.UserHandler, categoryHandler handler.Category
 
 	//Validator
 	e.Validator = &CustomValidator{validator: validator.New()}
+
+	e.Static("/images", "images")
 
 	v1 := e.Group("/api/v1")
 
@@ -50,6 +56,19 @@ func NewRouter(userHandler handler.UserHandler, categoryHandler handler.Category
 
 	categoryRouter := admin.Group("/category")
 	categoryRouter.POST("", categoryHandler.CreateNewCategory)
+	categoryRouter.GET("", categoryHandler.FindAllCategories)
+	categoryRouter.PUT("/:id", categoryHandler.UpdateCategory)
+	categoryRouter.DELETE("/:id", categoryHandler.DeleteCategory)
+
+	productRouter := admin.Group("/product")
+	productRouter.POST("", productHandler.CreateNewProduct)
+	productRouter.GET("", productHandler.GetProducts)
+	productRouter.GET("/:id", productHandler.GetProduct)
+	productRouter.PUT("/:id", productHandler.EditProduct)
+	productRouter.DELETE("/:id", productHandler.DeleteProduct)
+
+	transactionRouter := admin.Group("/transaction")
+	transactionRouter.POST("", transactionHandler.CreateTransaction)
 
 	return e
 }

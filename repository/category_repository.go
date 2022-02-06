@@ -12,6 +12,7 @@ type CategoryRepository interface {
 	Delete(category entity.Category) (bool, error)
 	Categories() ([]entity.Category, error)
 	Category(categoryID int) (entity.Category, error)
+	SubCategory(categoryID int) ([]entity.Category, error)
 }
 
 type categoryRepository struct {
@@ -52,7 +53,7 @@ func (r *categoryRepository) Delete(category entity.Category) (bool, error) {
 func (r *categoryRepository) Categories() ([]entity.Category, error) {
 	var categories []entity.Category
 
-	err := r.db.Find(&categories).Error
+	err := r.db.Where("is_primary = ? ", 1).Where("is_active = ?", 1).Find(&categories).Error
 	if err != nil {
 		return categories, err
 	}
@@ -63,10 +64,21 @@ func (r *categoryRepository) Categories() ([]entity.Category, error) {
 func (r *categoryRepository) Category(categoryID int) (entity.Category, error) {
 	var category entity.Category
 
-	err := r.db.Where("id = ?", categoryID).Find(&category).Error
+	err := r.db.Where("id = ?", categoryID).Where("is_active", 1).Find(&category).Error
 	if err != nil {
 		return category, err
 	}
 
 	return category, nil
+}
+
+func (r *categoryRepository) SubCategory(categoryID int) ([]entity.Category, error) {
+	var categories []entity.Category
+
+	err := r.db.Where("category_id = ? ", categoryID).Find(&categories).Error
+	if err != nil {
+		return categories, err
+	}
+
+	return categories, nil
 }
