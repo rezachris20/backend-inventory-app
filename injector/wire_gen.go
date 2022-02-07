@@ -31,7 +31,10 @@ func InitializedServer() *http.Server {
 	transactionRepository := repository.NewTransactionRepository(db)
 	transactionService := service.NewTransactionService(transactionRepository, productRepository)
 	transactionHandler := handler.NewTransactionHandler(transactionService)
-	echo := app.NewRouter(userHandler, categoryHandler, productHandler, transactionHandler)
+	roleRepository := repository.NewRoleRepository(db)
+	roleService := service.NewRoleService(roleRepository)
+	roleHandler := handler.NewRoleHandler(roleService)
+	echo := app.NewRouter(userHandler, categoryHandler, productHandler, transactionHandler, roleHandler)
 	server := app.NewServer(echo)
 	return server
 }
@@ -45,3 +48,5 @@ var categorySet = wire.NewSet(repository.NewCategoryRepository, service.NewCateg
 var productSet = wire.NewSet(repository.NewProductRepository, service.NewProductService, handler.NewProductHandler)
 
 var transactionSet = wire.NewSet(repository.NewTransactionRepository, service.NewTransactionService, handler.NewTransactionHandler)
+
+var roleSet = wire.NewSet(repository.NewRoleRepository, service.NewRoleService, handler.NewRoleHandler)

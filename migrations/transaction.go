@@ -7,7 +7,7 @@ type Transaction struct {
 	Diskon            int
 	TotalBayar        int
 	UserID            int
-	TransactionDetail TransactionDetail
+	TransactionDetail TransactionDetail `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	gorm.Model
 }
 

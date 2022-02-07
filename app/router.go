@@ -24,7 +24,8 @@ func NewRouter(
 	userHandler handler.UserHandler,
 	categoryHandler handler.CategoryHandler,
 	productHandler handler.ProductHandler,
-	transactionHandler handler.TransactionHandler) *echo.Echo {
+	transactionHandler handler.TransactionHandler,
+	roleHandler handler.RoleHandler) *echo.Echo {
 	e := echo.New()
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"*"},
@@ -69,6 +70,13 @@ func NewRouter(
 
 	transactionRouter := admin.Group("/transaction")
 	transactionRouter.POST("", transactionHandler.CreateTransaction)
+
+	roleRouter := admin.Group("/role")
+	roleRouter.POST("", roleHandler.CreateRole)
+	roleRouter.PUT("/:id", roleHandler.EditRole)
+	roleRouter.DELETE("/:id", roleHandler.DeleteRole)
+	roleRouter.GET("/:id", roleHandler.GetRole)
+	roleRouter.GET("", roleHandler.GetRoles)
 
 	return e
 }

@@ -26,6 +26,7 @@ func NewDB() *gorm.DB {
 	})
 
 	// MIGRATE DB
+	db.AutoMigrate(&migrations.Role{})
 	db.AutoMigrate(&migrations.User{})
 	db.AutoMigrate(&migrations.Category{})
 	db.AutoMigrate(&migrations.Product{})

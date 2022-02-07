@@ -32,7 +32,16 @@ var productSet = wire.NewSet(
 )
 
 var transactionSet = wire.NewSet(
-	repository.NewTransactionRepository, service.NewTransactionService, handler.NewTransactionHandler)
+	repository.NewTransactionRepository,
+	service.NewTransactionService,
+	handler.NewTransactionHandler,
+)
+
+var roleSet = wire.NewSet(
+	repository.NewRoleRepository,
+	service.NewRoleService,
+	handler.NewRoleHandler,
+)
 
 func InitializedServer() *http.Server {
 	wire.Build(
@@ -41,6 +50,7 @@ func InitializedServer() *http.Server {
 		categorySet,
 		productSet,
 		transactionSet,
+		roleSet,
 		app.NewRouter,
 		app.NewServer,
 	)

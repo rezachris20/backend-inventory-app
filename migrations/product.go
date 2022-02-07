@@ -9,6 +9,6 @@ type Product struct {
 	HargaBeli         uint
 	Qty               int
 	Image             string
-	TransactionDetail TransactionDetail
+	TransactionDetail TransactionDetail `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	gorm.Model
 }

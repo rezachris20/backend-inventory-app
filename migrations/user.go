@@ -10,6 +10,7 @@ type User struct {
 	Username    string `gorm:"size:255;index:idx_username,unique"`
 	Email       string `gorm:"size:255;index:idx_email,unique"`
 	Password    string
-	Transaction Transaction
+	Transaction Transaction `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	RoleID      int
 	gorm.Model
 }
