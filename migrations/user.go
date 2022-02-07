@@ -11,6 +11,6 @@ type User struct {
 	Email       string `gorm:"size:255;index:idx_email,unique"`
 	Password    string
 	Transaction Transaction `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	RoleID      int
+	UserRole    UserRole    `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	gorm.Model
 }

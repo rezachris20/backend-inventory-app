@@ -32,6 +32,8 @@ func NewDB() *gorm.DB {
 	db.AutoMigrate(&migrations.Product{})
 	db.AutoMigrate(&migrations.Transaction{})
 	db.AutoMigrate(&migrations.TransactionDetail{})
+	db.AutoMigrate(&migrations.UserRole{})
+	db.AutoMigrate(&migrations.HakAkses{})
 
 	if err != nil {
 		log.Fatal(err.Error())
