@@ -43,6 +43,12 @@ var roleSet = wire.NewSet(
 	handler.NewRoleHandler,
 )
 
+var userRoleSet = wire.NewSet(
+	repository.NewUserRoleRepository,
+	service.NewUserRoleService,
+	handler.NewUserRoleHandler,
+)
+
 func InitializedServer() *http.Server {
 	wire.Build(
 		app.NewDB,
@@ -51,6 +57,7 @@ func InitializedServer() *http.Server {
 		productSet,
 		transactionSet,
 		roleSet,
+		userRoleSet,
 		app.NewRouter,
 		app.NewServer,
 	)
