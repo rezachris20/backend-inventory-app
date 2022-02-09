@@ -3,6 +3,7 @@ package repository
 import (
 	"backend-inventory-app/entity"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type UserRoleRepository interface {
@@ -30,7 +31,7 @@ func (r *userRoleRepository) Save(userRole entity.UserRole) (entity.UserRole, er
 }
 
 func (r *userRoleRepository) Update(userRole entity.UserRole) (entity.UserRole, error) {
-	if err := r.db.Updates(&userRole).Error; err != nil {
+	if err := r.db.Debug().Updates(&userRole).Error; err != nil {
 		return userRole, err
 	}
 
@@ -50,7 +51,7 @@ func (r *userRoleRepository) Delete(userRoleID int) (bool, error) {
 func (r *userRoleRepository) FindByID(userRoleID int) (entity.UserRole, error) {
 	var userRole entity.UserRole
 
-	if err := r.db.Where("id = ?", userRoleID).Find(&userRole).Error; err != nil {
+	if err := r.db.Preload(clause.Associations).Where("id = ?", userRoleID).Find(&userRole).Error; err != nil {
 		return userRole, err
 	}
 
@@ -60,7 +61,7 @@ func (r *userRoleRepository) FindByID(userRoleID int) (entity.UserRole, error) {
 func (r *userRoleRepository) FindByAll() ([]entity.UserRole, error) {
 	var userRoles []entity.UserRole
 
-	if err := r.db.Find(&userRoles).Error; err != nil {
+	if err := r.db.Debug().Preload(clause.Associations).Find(&userRoles).Error; err != nil {
 		return userRoles, err
 	}
 
