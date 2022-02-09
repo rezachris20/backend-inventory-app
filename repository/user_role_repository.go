@@ -23,6 +23,7 @@ func NewUserRoleRepository(db *gorm.DB) UserRoleRepository {
 }
 
 func (r *userRoleRepository) Save(userRole entity.UserRole) (entity.UserRole, error) {
+
 	if err := r.db.Create(&userRole).Error; err != nil {
 		return userRole, err
 	}
