@@ -5,9 +5,9 @@ import (
 	"backend-inventory-app/web"
 	"backend-inventory-app/web/transaction"
 	userPayload "backend-inventory-app/web/users"
-	"github.com/labstack/echo/v4"
 	"net/http"
-	"strconv"
+
+	"github.com/labstack/echo/v4"
 )
 
 type TransactionHandler interface {
@@ -86,5 +86,23 @@ func (h *transactionHandler) FindAllTransactions(c echo.Context) (err error) {
 }
 
 func (h *transactionHandler) FindAllTransactionsByUserID(c echo.Context) (err error) {
-	userID, _ := strconv.Atoi(c.Param("user_id"))
+	user := c.Get("currentUser").(userPayload.UserResponse)
+	userID := user.ID
+
+	transactionsByUserID, err := h.service.GetAllTransactionsByUserID(userID)
+	if err != nil {
+		response := web.ApiResponse{
+			Code:    http.StatusBadRequest,
+			Status:  "success",
+			Message: err.Error(),
+		}
+		return c.JSON(http.StatusBadRequest, response)
+	}
+
+	response := web.ApiResponse{
+		Code:   http.StatusOK,
+		Status: "success",
+		Data:   transactionsByUserID,
+	}
+	return c.JSON(http.StatusOK, response)
 }

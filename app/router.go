@@ -71,6 +71,8 @@ func NewRouter(
 
 	transactionRouter := admin.Group("/transaction")
 	transactionRouter.POST("", transactionHandler.CreateTransaction)
+	transactionRouter.GET("", transactionHandler.FindAllTransactions)
+	transactionRouter.GET("/by_user", transactionHandler.FindAllTransactionsByUserID)
 
 	roleRouter := admin.Group("/role")
 	roleRouter.POST("", roleHandler.CreateRole)
