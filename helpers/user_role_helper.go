@@ -8,10 +8,8 @@ import (
 func ToUserRoleResponse(data entity.UserRole) user_role.UserRoleResponse {
 	return user_role.UserRoleResponse{
 		ID:        data.ID,
-		UserID:    data.UserID,
-		User:      data.User,
-		RoleID:    data.RoleID,
-		Role:      data.Role,
+		User:      ToUserResponse(data.User, ""),
+		Role:      ToRoleResponse(data.Role),
 		CreatedAt: data.CreatedAt,
 		UpdatedAt: data.UpdatedAt,
 	}

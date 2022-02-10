@@ -6,11 +6,12 @@ import (
 	"backend-inventory-app/repository"
 	"backend-inventory-app/web/transaction"
 	"errors"
-	"fmt"
 )
 
 type TransactionService interface {
 	CreateTransaction(request transaction.CreateTransactionRequest, userIDCreate int) (transaction.TransactionResponses, error)
+	GetAllTransactions() ([]transaction.TransactionResponses, error)
+	GetAllTransactionsByUserID(userID int) ([]transaction.TransactionResponses, error)
 }
 
 type transactionService struct {
@@ -32,11 +33,6 @@ func (s *transactionService) CreateTransaction(request transaction.CreateTransac
 	transaction.Diskon = request.Diskon
 	transaction.TotalBayar = request.TotalBayar
 	transaction.UserID = userIDCreate
-	// main := entity.Transaction{
-	// 	Diskon: request.Diskon,
-	// 	TotalBayar: request.TotalBayar,
-	// 	UserID: userIDCreate,
-	// }
 
 	for _, detail := range request.DetailTransactions {
 
@@ -56,7 +52,7 @@ func (s *transactionService) CreateTransaction(request transaction.CreateTransac
 		detailTransactions = append(detailTransactions, data)
 	}
 	transaction.TransactionDetail = detailTransactions
-	fmt.Println(transaction)
+
 	saveMain, err := s.transactionRepository.CreateMain(transaction)
 	if err != nil {
 		return transactionResponse, errors.New("failed to create transaction")
@@ -64,4 +60,22 @@ func (s *transactionService) CreateTransaction(request transaction.CreateTransac
 
 	return helpers.ToTransactionResponse(saveMain), nil
 
+}
+
+func (s *transactionService) GetAllTransactions() ([]transaction.TransactionResponses, error) {
+	transactions, err := s.transactionRepository.Transactions()
+	if err != nil {
+		return helpers.ToTransactionResponses(transactions), err
+	}
+
+	return helpers.ToTransactionResponses(transactions), nil
+}
+
+func (s *transactionService) GetAllTransactionsByUserID(userID int) ([]transaction.TransactionResponses, error) {
+	transactions, err := s.transactionRepository.TransactionsByUserID(userID)
+	if err != nil {
+		return helpers.ToTransactionResponses(transactions), err
+	}
+
+	return helpers.ToTransactionResponses(transactions), nil
 }

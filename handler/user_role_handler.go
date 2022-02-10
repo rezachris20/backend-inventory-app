@@ -67,6 +67,8 @@ func (h *userRoleHandler) NewUserRole(c echo.Context) (err error) {
 func (h *userRoleHandler) EditUserRole(c echo.Context) (err error) {
 	input := new(user_role.UpdateUserRoleRequest)
 
+	userRoleID, _ := strconv.Atoi(c.Param("id"))
+
 	if err = c.Bind(input); err != nil {
 		response := web.ApiResponse{
 			Code:    http.StatusUnprocessableEntity,
@@ -85,7 +87,7 @@ func (h *userRoleHandler) EditUserRole(c echo.Context) (err error) {
 		return c.JSON(http.StatusUnprocessableEntity, response)
 	}
 
-	userRole, err := h.userRoleService.UpdateUserRole(*input)
+	userRole, err := h.userRoleService.UpdateUserRole(userRoleID, *input)
 	if err != nil {
 		response := web.ApiResponse{
 			Code:    http.StatusBadRequest,
